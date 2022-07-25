@@ -49,6 +49,8 @@ function(tbb_add_test)
                          -DBINARIES_PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
                          -DTEST_NAME=${_tbb_test_TARGET_NAME}
                          -P ${PROJECT_SOURCE_DIR}/cmake/android/test_launcher.cmake)
+    elseif(TBB_EMSCRIPTEN)
+        add_test(NAME ${_tbb_test_TARGET_NAME} COMMAND node --experimental-wasm-threads --experimental-wasm-bulk-memory ${_tbb_test_TARGET_NAME} --force-colors=1 WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
     else()
         add_test(NAME ${_tbb_test_TARGET_NAME} COMMAND ${_tbb_test_TARGET_NAME} --force-colors=1 WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
         # Additional testing scenarios if Intel(R) Software Development Emulator is found
@@ -493,7 +495,9 @@ if (TARGET TBB::tbb)
     tbb_add_test(SUBDIR conformance NAME conformance_enumerable_thread_specific DEPENDENCIES TBB::tbb)
     tbb_add_test(SUBDIR conformance NAME conformance_combinable DEPENDENCIES TBB::tbb)
     tbb_add_test(SUBDIR conformance NAME conformance_concurrent_queue DEPENDENCIES TBB::tbb)
-    tbb_add_test(SUBDIR conformance NAME conformance_resumable_tasks DEPENDENCIES TBB::tbb)
+    if (NOT TBB_EMSCRIPTEN)
+      tbb_add_test(SUBDIR conformance NAME conformance_resumable_tasks DEPENDENCIES TBB::tbb)
+    endif()
     tbb_add_test(SUBDIR conformance NAME conformance_version DEPENDENCIES TBB::tbb)
     # functional nodes conformance
     tbb_add_test(SUBDIR conformance NAME conformance_function_node DEPENDENCIES TBB::tbb)
@@ -537,9 +541,11 @@ endif()
 
 if (TARGET TBB::tbbmalloc)
     # TBB allocator tests
-    if (NOT "${CMAKE_SYSTEM_PROCESSOR}" MATCHES "mips")
-        # Define TBB malloc tests
-        tbb_add_test(SUBDIR tbbmalloc NAME test_scalable_allocator DEPENDENCIES TBB::tbbmalloc)
+    if (NOT "${CMAKE_SYSTEM_PROCESSOR}" MATCHES "mips")# OR TBB_EMSCRIPTEN)
+      # Define TBB malloc tests
+      if (NOT TBB_EMSCRIPTEN)
+        tbb_add_test(SUBDIR tbbmalloc NAME test_scalable_allocator DEPENDENCIES TBB::tbbmalloc) #initial memory too small, 22162624 bytes needed
+      endif()
         tbb_add_test(SUBDIR tbbmalloc NAME test_malloc_pools DEPENDENCIES TBB::tbbmalloc)
         tbb_add_test(SUBDIR tbbmalloc NAME test_malloc_init_shutdown DEPENDENCIES TBB::tbbmalloc)
         tbb_add_test(SUBDIR tbbmalloc NAME test_malloc_regression DEPENDENCIES TBB::tbbmalloc)
@@ -553,7 +559,9 @@ if (TARGET TBB::tbbmalloc)
             tbb_add_lib_test(SUBDIR tbbmalloc NAME test_malloc_used_by_lib DEPENDENCIES TBB::tbbmalloc)
             tbb_add_test(SUBDIR tbbmalloc NAME test_malloc_used_by_lib DEPENDENCIES _test_malloc_used_by_lib)
             tbb_add_lib_test(SUBDIR tbbmalloc NAME test_malloc_lib_unload)
-            tbb_add_test(SUBDIR tbbmalloc NAME test_malloc_lib_unload DEPENDENCIES _test_malloc_lib_unload)
+	    if (NOT TBB_EMSCRIPTEN)
+              tbb_add_test(SUBDIR tbbmalloc NAME test_malloc_lib_unload DEPENDENCIES _test_malloc_lib_unload)
+	    endif()
         endif()
 
         enable_language(C)
@@ -584,7 +592,7 @@ if (TARGET TBB::tbbmalloc)
                             -DBINARIES_PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
                             -DTEST_NAME=test_malloc_whitebox
                             -P ${PROJECT_SOURCE_DIR}/cmake/android/test_launcher.cmake)
-        else()
+        elseif (NOT TBB_EMSCRIPTEN)
             add_test(NAME test_malloc_whitebox COMMAND test_malloc_whitebox --force-colors=1)
         endif()
         if (COMMAND target_link_options)

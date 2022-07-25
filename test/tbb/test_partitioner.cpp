@@ -126,7 +126,7 @@ void relaxed_test() {
 
 void strict_test() {
     utils::SpinBarrier barrier(2 * utils::get_platform_max_threads());
-    const float tolerance = 1e-5f;
+    const float tolerance = 1e-1f;
     while (test(/*per body invocation call*/[&barrier] { barrier.wait(); }) > tolerance);
 }
 

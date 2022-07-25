@@ -125,7 +125,6 @@ int main() {}
 #include "common/test.h"
 #include "common/memory_usage.h"
 #include "common/utils_dynamic_libs.h"
-#include "common/utils_assert.h"
 #include "common/utils_report.h"
 #include <cstring> // memset
 

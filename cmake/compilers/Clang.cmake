@@ -12,6 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if(EMSCRIPTEN)
+  set(TBB_EMSCRIPTEN 1)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -pthread -s ALLOW_MEMORY_GROWTH=1 -s EXIT_RUNTIME=1 -s PROXY_TO_PTHREAD=1")
+  set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} -pthread)
+endif()
+
 if (MINGW)
     set(TBB_LINK_DEF_FILE_FLAG "")
     set(TBB_DEF_FILE_PREFIX "")

@@ -31,7 +31,6 @@
 #include "tbb/global_control.h"
 #include "tbb/task_arena.h"
 #include "../../src/tbb/concurrent_monitor.h"
-#include "../../src/tbb/misc.cpp"
 
 //! \file test_concurrent_monitor.cpp
 //! \brief Test for [internal] functionality

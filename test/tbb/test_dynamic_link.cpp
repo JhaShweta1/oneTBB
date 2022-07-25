@@ -21,6 +21,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#include "src/tbb/dynamic_link.cpp"
 #include "common/test.h"
 
 enum FOO_TYPE {
@@ -46,7 +47,7 @@ FOO_TYPE dummy_foo2() { return FOO_DUMMY; }
 #ifdef __TBB_WEAK_SYMBOLS_PRESENT
 #undef __TBB_WEAK_SYMBOLS_PRESENT
 #endif
-#include "src/tbb/dynamic_link.h"
+
 
 #if __TBB_DYNAMIC_LOAD_ENABLED
 // Handlers.
@@ -61,7 +62,6 @@ static const tbb::detail::r1::dynamic_link_descriptor LinkTable[] = {
 #endif
 
 // The direct include since we want to test internal functionality.
-#include "src/tbb/dynamic_link.cpp"
 #include "common/utils.h"
 #include "common/utils_dynamic_libs.h"
 

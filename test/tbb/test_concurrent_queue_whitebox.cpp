@@ -26,7 +26,6 @@
 #include "common/test.h"
 #include "common/utils.h"
 #define __TBB_TEST_DEFINE_PRIVATE_PUBLIC 1
-#include "common/inject_scheduler.h"
 #define private public
 #define protected public
 #include "tbb/concurrent_queue.h"
