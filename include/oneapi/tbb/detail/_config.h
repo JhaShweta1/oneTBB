@@ -136,7 +136,6 @@
 #endif // TBB_USE_PROFILING_TOOLS
 
 // Exceptions support cases
-// TBB_USE_EXCEPTIONS is set to 0 for emscriptem TODO:
 #if !(__EXCEPTIONS || defined(_CPPUNWIND) || __SUNPRO_CC)
     #if TBB_USE_EXCEPTIONS
         #error Compilation settings do not support exception handling. Please do not set TBB_USE_EXCEPTIONS macro or set it to 0.
