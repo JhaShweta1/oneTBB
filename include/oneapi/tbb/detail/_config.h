@@ -144,7 +144,7 @@
         #define TBB_USE_EXCEPTIONS 0
     #endif
 #elif !defined(TBB_USE_EXCEPTIONS)
-    #define TBB_USE_EXCEPTIONS 0
+    #define TBB_USE_EXCEPTIONS 1
 #endif
 
 /** Preprocessor symbols to determine HW architecture **/
